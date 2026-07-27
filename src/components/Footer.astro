@@ -1,0 +1,60 @@
+---
+import { localeUrl, SITE, t, type Locale } from '../lib/i18n'
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const strings = t(locale)
+const year = new Date().getFullYear()
+---
+
+<footer class="site-footer">
+  <div class="shell shell--wide inner">
+    <p class="label copy">© {year} {SITE.author} · {strings['footer.builtWith']}</p>
+    <p class="links">
+      <a href={localeUrl(locale, 'rss.xml')}>RSS</a>
+      <a href={SITE.github} rel="me noopener">GitHub</a>
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-block-start: 1px solid var(--rule);
+  }
+
+  .inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+    padding-block: 1.6rem 2.2rem;
+  }
+
+  .copy {
+    margin: 0;
+  }
+
+  .links {
+    display: flex;
+    gap: 1.1rem;
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .links a {
+    color: var(--ink-faint);
+    text-decoration: none;
+    transition: color 180ms ease;
+  }
+
+  .links a:hover {
+    color: var(--seal);
+  }
+</style>

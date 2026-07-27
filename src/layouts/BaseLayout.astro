@@ -1,0 +1,106 @@
+---
+import '../styles/global.css'
+import Footer from '../components/Footer.astro'
+import Header from '../components/Header.astro'
+import { assetUrl, HTML_LANG, localeUrl, LOCALES, t, type Locale } from '../lib/i18n'
+
+interface Props {
+  locale: Locale
+  /** Page title, without the site name — omit on the home page. */
+  title?: string
+  description?: string
+  /** Equivalent page per locale; drives both hreflang and the language switch. */
+  alternates?: Partial<Record<Locale, string>>
+  ogType?: 'website' | 'article'
+}
+
+const { locale, title, description, alternates = {}, ogType = 'website' } = Astro.props
+
+const strings = t(locale)
+const siteTitle = strings['site.title']
+const pageTitle = title ? `${title} · ${siteTitle}` : siteTitle
+const desc = description ?? strings['site.description']
+const canonical = new URL(Astro.url.pathname, Astro.site)
+---
+
+<!doctype html>
+<html lang={HTML_LANG[locale]}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={desc} />
+    <link rel="canonical" href={canonical} />
+
+    <link rel="icon" href={assetUrl('favicon.svg')} type="image/svg+xml" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f6f2e9" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#131210" />
+
+    {
+      LOCALES.map((other) =>
+        alternates[other] ? (
+          <link
+            rel="alternate"
+            hreflang={HTML_LANG[other]}
+            href={new URL(alternates[other]!, Astro.site)}
+          />
+        ) : null,
+      )
+    }
+    {
+      alternates.en ? (
+        <link rel="alternate" hreflang="x-default" href={new URL(alternates.en, Astro.site)} />
+      ) : null
+    }
+
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={siteTitle}
+      href={localeUrl(locale, 'rss.xml')}
+    />
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={siteTitle} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={desc} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={locale === 'zh' ? 'zh_CN' : 'en_US'} />
+    <meta name="twitter:card" content="summary" />
+
+    <!-- Preloaded because nearly every page sets Latin text in it. Font preloads
+         need `crossorigin` even same-origin, or the request is made twice. -->
+    <link
+      rel="preload"
+      href={assetUrl('fonts/newsreader-latin.woff2')}
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <!-- Resolve the theme before first paint so there is no flash of the wrong one. -->
+    <script is:inline>
+      try {
+        const stored = localStorage.getItem('theme')
+        document.documentElement.dataset.theme =
+          stored === 'light' || stored === 'dark'
+            ? stored
+            : matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light'
+      } catch {
+        document.documentElement.dataset.theme = 'light'
+      }
+    </script>
+  </head>
+
+  <body>
+    <Header locale={locale} alternates={alternates} />
+    <main>
+      <slot />
+    </main>
+    <Footer locale={locale} />
+  </body>
+</html>

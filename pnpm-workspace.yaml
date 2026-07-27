@@ -1,0 +1,4 @@
+# esbuild's install script links the platform-specific binary. pnpm blocks
+# dependency build scripts until they are explicitly allowed here.
+allowBuilds:
+  esbuild: true

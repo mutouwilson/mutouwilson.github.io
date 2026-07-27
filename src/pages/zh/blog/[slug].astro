@@ -1,0 +1,21 @@
+---
+import { render } from 'astro:content'
+import PostLayout from '../../../layouts/PostLayout.astro'
+import { getPosts, getTranslation, parseId } from '../../../lib/posts'
+
+export async function getStaticPaths() {
+  const posts = await getPosts('zh')
+  return posts.map((post) => ({
+    params: { slug: parseId(post.id).slug },
+    props: { post },
+  }))
+}
+
+const { post } = Astro.props
+const { Content } = await render(post)
+const translation = await getTranslation(post)
+---
+
+<PostLayout locale="zh" post={post} translation={translation}>
+  <Content />
+</PostLayout>

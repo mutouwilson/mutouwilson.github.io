@@ -1,0 +1,154 @@
+---
+import { t, type Locale } from '../lib/i18n'
+import { formatDate, parseId, postUrl, readingTime, type Post } from '../lib/posts'
+
+interface Props {
+  posts: Post[]
+  locale: Locale
+  /** Starting offset for the staggered entrance, so it continues after page chrome. */
+  revealFrom?: number
+}
+
+const { posts, locale, revealFrom = 0 } = Astro.props
+const strings = t(locale)
+---
+
+{
+  posts.length === 0 ? (
+    <p class="empty lede">{strings['blog.empty']}</p>
+  ) : (
+    <ol class="index">
+      {posts.map((post, i) => (
+        <li class="row reveal" style={`--i: ${revealFrom + i}`}>
+          <a class="row-link" href={postUrl(locale, parseId(post.id).slug)}>
+            <span class="row-num label">{String(i + 1).padStart(2, '0')}</span>
+            <span class="row-body">
+              <span class="row-title">{post.data.title}</span>
+              <span class="row-desc">{post.data.description}</span>
+            </span>
+            <span class="row-meta label">
+              <time datetime={post.data.pubDate.toISOString()}>
+                {formatDate(post.data.pubDate, locale)}
+              </time>
+              <span class="dot">·</span>
+              <span>{strings['post.readingTime'](readingTime(post.body))}</span>
+              {post.data.draft && <span class="draft">draft</span>}
+            </span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  )
+}
+
+<style>
+  .empty {
+    margin: 0;
+    font-style: italic;
+  }
+
+  .index {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .row + .row {
+    border-block-start: 1px solid var(--rule);
+  }
+
+  .row-link {
+    display: grid;
+    grid-template-columns: 2.25rem minmax(0, 1fr);
+    gap: 0.35rem 1.1rem;
+    padding-block: 1.35rem;
+    text-decoration: none;
+  }
+
+  .row-num {
+    grid-row: 1;
+    padding-block-start: 0.3em;
+    transition: color 180ms ease;
+  }
+
+  .row-body {
+    grid-column: 2;
+    display: block;
+  }
+
+  .row-title {
+    display: block;
+    font-size: 1.25rem;
+    font-weight: 450;
+    line-height: 1.3;
+    letter-spacing: -0.012em;
+    text-wrap: balance;
+    transition: color 180ms ease;
+  }
+
+  .row-desc {
+    display: block;
+    margin-block-start: 0.3rem;
+    color: var(--ink-soft);
+    font-size: 0.9375rem;
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  .row-meta {
+    grid-column: 2;
+    display: flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    margin-block-start: 0.55rem;
+  }
+
+  .dot {
+    color: var(--rule-strong);
+  }
+
+  .draft {
+    color: var(--seal);
+    border: 1px solid currentColor;
+    border-radius: 2px;
+    padding: 0 0.3em;
+  }
+
+  .row-link:hover .row-num,
+  .row-link:hover .row-title {
+    color: var(--seal);
+  }
+
+  .row-link:hover .row-title {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.16em;
+  }
+
+  :lang(zh) .row-title {
+    letter-spacing: 0.005em;
+    line-height: 1.45;
+  }
+
+  /* Wide screens: pull the date out into the margin as a running rail. */
+  @media (min-width: 52rem) {
+    .row-link {
+      grid-template-columns: 2.25rem minmax(0, 1fr) auto;
+      align-items: start;
+    }
+
+    .row-meta {
+      grid-column: 3;
+      grid-row: 1;
+      flex-direction: column;
+      align-items: end;
+      gap: 0.3rem;
+      margin-block-start: 0.45em;
+      text-align: end;
+    }
+
+    .dot {
+      display: none;
+    }
+  }
+</style>

@@ -1,0 +1,416 @@
+/* ============================================================================
+   Newsreader — self-hosted from public/fonts/.
+   Split by unicode-range so `latin-ext` is only fetched by pages that actually
+   contain accented characters. Paths assume `base: '/'` in astro.config.mjs.
+   ========================================================================== */
+@font-face {
+  font-family: 'Newsreader';
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url('/fonts/newsreader-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Newsreader';
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url('/fonts/newsreader-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7,
+    U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF,
+    U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Newsreader';
+  font-style: italic;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url('/fonts/newsreader-italic-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Newsreader';
+  font-style: italic;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url('/fonts/newsreader-italic-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7,
+    U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF,
+    U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* ============================================================================
+   Tokens
+   ========================================================================== */
+:root {
+  /* Latin from Newsreader, CJK from the reader's system serif. */
+  --font-serif: 'Newsreader', 'Songti SC', 'Songti TC', 'STSong',
+    'Source Han Serif SC', 'Noto Serif CJK SC', 'Noto Serif SC', 'AR PL UMing CN',
+    serif;
+  --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, 'JetBrains Mono',
+    'IBM Plex Mono', Menlo, Consolas, monospace;
+
+  /* Warm paper & ink. Cinnabar is the only accent — used sparingly. */
+  --paper: #f6f2e9;
+  --paper-raised: #fdfbf6;
+  --paper-sunk: #efe9dc;
+  --ink: #1b1916;
+  --ink-soft: #55504a;
+  /* 4.98:1 on --paper. `.label` metadata is 11px, so it needs the full 4.5:1. */
+  --ink-faint: #6f675c;
+  --rule: #ded6c6;
+  --rule-strong: #c8bfab;
+  --seal: #a5312a;
+  --seal-ink: #fdfbf6;
+  --grain: 0.035;
+  --shadow: 0 1px 2px rgb(27 25 22 / 4%), 0 8px 28px -12px rgb(27 25 22 / 12%);
+
+  --measure: 34rem;
+  --gutter: clamp(1.25rem, 5vw, 3rem);
+
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --paper: #131210;
+  --paper-raised: #1c1a17;
+  --paper-sunk: #0d0c0b;
+  --ink: #e9e2d4;
+  --ink-soft: #a8a094;
+  /* 4.63:1 on the dark --paper — see the note on the light value above. */
+  --ink-faint: #857e73;
+  --rule: #302c26;
+  --rule-strong: #453f37;
+  --seal: #d9614e;
+  --seal-ink: #16130f;
+  --grain: 0.055;
+  --shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 8px 28px -12px rgb(0 0 0 / 60%);
+
+  color-scheme: dark;
+}
+
+/* ============================================================================
+   Reset & base
+   ========================================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: clamp(1.0625rem, 0.4vw + 1rem, 1.1875rem);
+  font-weight: 380;
+  line-height: 1.72;
+  font-optical-sizing: auto;
+  font-variant-numeric: oldstyle-nums;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Paper grain. Fixed, non-interactive, sits above the background only. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: var(--grain);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+body > * {
+  position: relative;
+  z-index: 1;
+}
+
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* CJK sets tighter than Latin at the same size and needs no italic synthesis. */
+:lang(zh) {
+  line-height: 1.85;
+  font-variant-numeric: normal;
+}
+
+:lang(zh) em {
+  font-style: normal;
+  /* Chinese convention: emphasis dots, not italics. */
+  text-emphasis: dot;
+  text-emphasis-position: under right;
+  -webkit-text-emphasis: dot;
+  -webkit-text-emphasis-position: under right;
+}
+
+/* ============================================================================
+   Links
+   ========================================================================== */
+a {
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--rule-strong);
+  text-underline-offset: 0.22em;
+  transition: text-decoration-color 160ms ease, color 160ms ease;
+}
+
+a:hover {
+  text-decoration-color: var(--seal);
+}
+
+:focus-visible {
+  outline: 2px solid var(--seal);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--seal) 22%, transparent);
+}
+
+/* ============================================================================
+   Layout
+   ========================================================================== */
+.shell {
+  width: 100%;
+  max-width: calc(var(--measure) + var(--gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.shell--wide {
+  max-width: calc(var(--measure) + 14rem);
+}
+
+main {
+  flex: 1;
+  padding-block: clamp(2.5rem, 6vw, 5rem) clamp(3.5rem, 9vw, 7rem);
+}
+
+/* ============================================================================
+   Type
+   ========================================================================== */
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.014em;
+  text-wrap: balance;
+  margin: 0;
+}
+
+:lang(zh) h1,
+:lang(zh) h2,
+:lang(zh) h3,
+:lang(zh) h4 {
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+}
+
+.display {
+  font-size: clamp(2.25rem, 6vw, 3.5rem);
+  font-weight: 400;
+  letter-spacing: -0.024em;
+}
+
+/* Small caps-ish label, set in mono to contrast the serif body. */
+.label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.lede {
+  color: var(--ink-soft);
+  font-size: 1.0625em;
+  text-wrap: pretty;
+}
+
+.rule {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 0;
+}
+
+/* ============================================================================
+   Prose — article body
+   ========================================================================== */
+.prose > * + * {
+  margin-block-start: 1.4em;
+}
+
+.prose h2,
+.prose h3 {
+  margin-block-start: 2.4em;
+  margin-block-end: -0.6em;
+}
+
+.prose h2 {
+  font-size: 1.5em;
+}
+
+.prose h3 {
+  font-size: 1.2em;
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+
+.prose blockquote {
+  margin-inline: 0;
+  padding-inline-start: 1.25em;
+  border-inline-start: 2px solid var(--seal);
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.prose :lang(zh) blockquote,
+.prose blockquote:lang(zh) {
+  font-style: normal;
+}
+
+.prose ul,
+.prose ol {
+  padding-inline-start: 1.4em;
+}
+
+.prose li + li {
+  margin-block-start: 0.4em;
+}
+
+.prose li::marker {
+  color: var(--ink-faint);
+}
+
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  background: var(--paper-sunk);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 0.1em 0.34em;
+}
+
+.prose pre {
+  font-size: 0.86rem;
+  line-height: 1.7;
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow-x: auto;
+  background: var(--paper-sunk) !important;
+}
+
+.prose pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+}
+
+/* Shiki dual-theme: swap token colours with the site theme. */
+:root[data-theme='dark'] .astro-code,
+:root[data-theme='dark'] .astro-code span {
+  color: var(--shiki-dark) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+
+.prose img {
+  border-radius: 3px;
+  border: 1px solid var(--rule);
+}
+
+.prose figcaption,
+.prose img + em {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--ink-faint);
+  text-align: center;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.94em;
+}
+
+/* A table box can exceed its container and make the whole page scroll sideways.
+   Keeping cell content breakable is what prevents that in practice — long inline
+   code and URLs are the usual culprits. The tidier fix (wrapping each table in an
+   overflow container) needs a rehype plugin, which would mean switching Markdown
+   processors; see the note in astro.config.mjs. A table with enough columns to
+   exceed the measure on its own can still overflow. */
+.prose :is(th, td) {
+  text-align: start;
+  padding: 0.5em 0.7em;
+  border-bottom: 1px solid var(--rule);
+  overflow-wrap: break-word;
+}
+
+.prose :is(th, td) code {
+  overflow-wrap: anywhere;
+}
+
+.prose th {
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+
+.prose hr {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin-block: 2.6em;
+}
+
+
+/* ============================================================================
+   Entrance — one orchestrated reveal on load, staggered by --i
+   ========================================================================== */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    animation: rise 620ms cubic-bezier(0.2, 0.7, 0.3, 1) backwards;
+    animation-delay: calc(var(--i, 0) * 55ms + 40ms);
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(0.6rem);
+    }
+  }
+}

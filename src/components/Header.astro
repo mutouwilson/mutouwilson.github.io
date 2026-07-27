@@ -1,0 +1,107 @@
+---
+import { HTML_LANG, LOCALE_LABEL, localeUrl, t, type Locale } from '../lib/i18n'
+import SealMark from './SealMark.astro'
+import ThemeToggle from './ThemeToggle.astro'
+
+interface Props {
+  locale: Locale
+  /** Equivalent page per locale, so the language switch stays on the same content. */
+  alternates?: Partial<Record<Locale, string>>
+}
+
+const { locale, alternates = {} } = Astro.props
+const strings = t(locale)
+const other: Locale = locale === 'en' ? 'zh' : 'en'
+const otherHref = alternates[other] ?? localeUrl(other)
+---
+
+<header class="site-header">
+  <div class="shell shell--wide inner">
+    <a class="brand" href={localeUrl(locale)}>
+      <SealMark size={26} />
+      <span class="brand-name">{strings['site.title']}</span>
+    </a>
+
+    <nav class="nav">
+      <a class="nav-link" href={localeUrl(locale, 'blog')}>{strings['nav.writing']}</a>
+      <a
+        class="nav-link lang"
+        href={otherHref}
+        lang={HTML_LANG[other]}
+        hreflang={HTML_LANG[other]}
+        aria-label={strings['lang.switch']}>{LOCALE_LABEL[other]}</a
+      >
+      <ThemeToggle locale={locale} />
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    border-block-end: 1px solid var(--rule);
+  }
+
+  .inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 0.9rem;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+  }
+
+  .brand-name {
+    font-size: 1.0625rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .brand:hover .brand-name {
+    color: var(--seal);
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.75rem, 3vw, 1.5rem);
+  }
+
+  .nav-link {
+    text-decoration: none;
+    color: var(--ink-soft);
+    transition: color 180ms ease;
+  }
+
+  .nav-link:hover {
+    color: var(--seal);
+  }
+
+  .lang {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.5rem;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+  }
+
+  .lang:hover {
+    border-color: var(--seal);
+  }
+
+  /* CJK label needs no letter-spacing or uppercasing. */
+  .lang:lang(zh) {
+    letter-spacing: 0;
+    text-transform: none;
+    font-family: var(--font-serif);
+    font-size: 0.8125rem;
+  }
+</style>

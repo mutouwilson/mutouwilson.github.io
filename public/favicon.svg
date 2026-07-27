@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="4.5" fill="#a5312a" />
+  <text
+    x="16"
+    y="16"
+    fill="#fdfbf6"
+    font-family="'Songti SC','Source Han Serif SC','Noto Serif SC',serif"
+    font-size="23"
+    text-anchor="middle"
+    dominant-baseline="central"
+  >木</text>
+</svg>

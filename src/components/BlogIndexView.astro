@@ -1,0 +1,57 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { localeUrl, t, type Locale } from '../lib/i18n'
+import { getPosts } from '../lib/posts'
+import PostIndex from './PostIndex.astro'
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const strings = t(locale)
+const posts = await getPosts(locale)
+
+const alternates = {
+  en: localeUrl('en', 'blog'),
+  zh: localeUrl('zh', 'blog'),
+}
+---
+
+<BaseLayout
+  locale={locale}
+  title={strings['blog.title']}
+  description={strings['blog.description']}
+  alternates={alternates}
+>
+  <div class="shell shell--wide">
+    <header class="page-head">
+      <h1 class="display reveal">{strings['blog.title']}</h1>
+      <p class="lede reveal" style="--i: 1">{strings['blog.description']}</p>
+    </header>
+
+    <hr class="rule reveal" style="--i: 2" />
+
+    <PostIndex posts={posts} locale={locale} revealFrom={3} />
+  </div>
+</BaseLayout>
+
+<style>
+  .page-head {
+    padding-block-end: 2.2rem;
+  }
+
+  .display {
+    --i: 0;
+    margin: 0;
+  }
+
+  .lede {
+    max-width: 32rem;
+    margin: 1.1rem 0 0;
+  }
+
+  .rule {
+    margin-block-end: 0.6rem;
+  }
+</style>

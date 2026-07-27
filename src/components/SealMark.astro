@@ -1,0 +1,37 @@
+---
+// The site's mark: a cinnabar seal stamped with 木 (from "mutouwilson" / 木头).
+// Reused as the logo, the end-of-article mark, and the favicon.
+interface Props {
+  size?: number
+  char?: string
+  class?: string
+}
+
+const { size = 30, char = '木', class: className } = Astro.props
+---
+
+<span class:list={['seal', className]} style={`--seal-size: ${size}px`} aria-hidden="true"
+  >{char}</span
+>
+
+<style>
+  .seal {
+    display: grid;
+    place-items: center;
+    flex: none;
+    inline-size: var(--seal-size);
+    block-size: var(--seal-size);
+    border-radius: calc(var(--seal-size) * 0.15);
+    background: var(--seal);
+    color: var(--seal-ink);
+    font-family: var(--font-serif);
+    font-size: calc(var(--seal-size) * 0.64);
+    font-weight: 500;
+    line-height: 1;
+    user-select: none;
+    /* Reads as inked and pressed rather than as a flat UI chip. */
+    box-shadow:
+      inset 0 0 0 1px rgb(0 0 0 / 16%),
+      inset 0 calc(var(--seal-size) * -0.07) calc(var(--seal-size) * 0.14) rgb(0 0 0 / 12%);
+  }
+</style>

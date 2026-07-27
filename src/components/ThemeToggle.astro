@@ -1,0 +1,72 @@
+---
+import { t, type Locale } from '../lib/i18n'
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+---
+
+<button type="button" class="toggle" data-theme-toggle aria-label={t(locale)['theme.switch']}>
+  <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">
+    <mask id="seal-moon-cut">
+      <rect width="20" height="20" fill="#fff"></rect>
+      <circle class="cut" cx="17" cy="4" r="7.5" fill="#000"></circle>
+    </mask>
+    <circle cx="10" cy="10" r="7.5" fill="currentColor" mask="url(#seal-moon-cut)"></circle>
+  </svg>
+</button>
+
+<style>
+  .toggle {
+    display: grid;
+    place-items: center;
+    inline-size: 2rem;
+    block-size: 2rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: var(--ink-faint);
+    cursor: pointer;
+    transition: color 180ms ease, background-color 180ms ease;
+  }
+
+  .toggle:hover {
+    color: var(--seal);
+    background: var(--paper-sunk);
+  }
+
+  /* Light theme shows a crescent ("go dark"); dark theme moves the bite away,
+     leaving a full disc ("go light"). */
+  .cut {
+    transition: transform 340ms cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+
+  :root[data-theme='dark'] .cut {
+    transform: translate(7px, -7px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cut {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const root = document.documentElement
+
+  for (const button of document.querySelectorAll('[data-theme-toggle]')) {
+    button.addEventListener('click', () => {
+      const next = root.dataset.theme === 'dark' ? 'light' : 'dark'
+      root.dataset.theme = next
+      try {
+        localStorage.setItem('theme', next)
+      } catch {
+        // Private browsing can reject writes; the theme still applies for this page.
+      }
+    })
+  }
+</script>

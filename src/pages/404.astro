@@ -1,0 +1,55 @@
+---
+import SealMark from '../components/SealMark.astro'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { DEFAULT_LOCALE, localeUrl, t } from '../lib/i18n'
+
+// GitHub Pages serves this for any unmatched path, including under /zh/, so it
+// stays in the default locale and links back to the default home page.
+const locale = DEFAULT_LOCALE
+const strings = t(locale)
+---
+
+<BaseLayout locale={locale} title={strings['404.title']} description={strings['404.body']}>
+  <div class="shell notfound">
+    <p class="seal reveal"><SealMark size={28} /></p>
+    <h1 class="display reveal" style="--i: 1">{strings['404.title']}</h1>
+    <p class="lede reveal" style="--i: 2">{strings['404.body']}</p>
+    <p class="back reveal" style="--i: 3">
+      <a href={localeUrl(locale)}>← {strings['404.home']}</a>
+    </p>
+  </div>
+</BaseLayout>
+
+<style>
+  .notfound {
+    padding-block: clamp(2rem, 8vw, 5rem);
+  }
+
+  .seal {
+    --i: 0;
+    margin: 0 0 1.75rem;
+  }
+
+  .display {
+    margin: 0;
+  }
+
+  .lede {
+    margin: 1.1rem 0 0;
+    max-width: 28rem;
+  }
+
+  .back {
+    margin: 2rem 0 0;
+    font-size: 0.9375rem;
+  }
+
+  .back a {
+    color: var(--ink-soft);
+    text-decoration: none;
+  }
+
+  .back a:hover {
+    color: var(--seal);
+  }
+</style>

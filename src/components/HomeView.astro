@@ -1,0 +1,79 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { localeUrl, t, type Locale } from '../lib/i18n'
+import { getPosts } from '../lib/posts'
+import PostIndex from './PostIndex.astro'
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const strings = t(locale)
+const RECENT = 5
+const posts = (await getPosts(locale)).slice(0, RECENT)
+
+const alternates = { en: localeUrl('en'), zh: localeUrl('zh') }
+---
+
+<BaseLayout locale={locale} alternates={alternates}>
+  <div class="shell shell--wide">
+    <section class="intro">
+      <h1 class="display reveal">{strings['site.title']}<span class="mark">.</span></h1>
+      <p class="lede intro-text reveal" style="--i: 1">{strings['home.intro']}</p>
+    </section>
+
+    <hr class="rule reveal" style="--i: 2" />
+
+    <section>
+      <h2 class="label section-title reveal" style="--i: 3">{strings['home.recent']}</h2>
+      <PostIndex posts={posts} locale={locale} revealFrom={4} />
+      <p class="more reveal" style={`--i: ${4 + posts.length}`}>
+        <a href={localeUrl(locale, 'blog')}>{strings['home.all']} →</a>
+      </p>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .intro {
+    padding-block-end: 2.5rem;
+  }
+
+  .display {
+    --i: 0;
+    margin: 0;
+  }
+
+  /* The one spot of cinnabar above the fold — echoes the seal. */
+  .mark {
+    color: var(--seal);
+  }
+
+  .intro-text {
+    max-width: 32rem;
+    margin: 1.5rem 0 0;
+  }
+
+  .rule {
+    margin-block-end: 2rem;
+  }
+
+  .section-title {
+    margin: 0 0 0.4rem;
+  }
+
+  .more {
+    margin: 1.8rem 0 0;
+    font-size: 0.9375rem;
+  }
+
+  .more a {
+    color: var(--ink-soft);
+    text-decoration: none;
+  }
+
+  .more a:hover {
+    color: var(--seal);
+  }
+</style>

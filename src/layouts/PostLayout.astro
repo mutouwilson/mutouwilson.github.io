@@ -1,0 +1,181 @@
+---
+import SealMark from '../components/SealMark.astro'
+import { HTML_LANG, localeUrl, t, type Locale } from '../lib/i18n'
+import { formatDate, parseId, postUrl, readingTime, type Post } from '../lib/posts'
+import BaseLayout from './BaseLayout.astro'
+
+interface Props {
+  locale: Locale
+  post: Post
+  translation?: Post
+}
+
+const { locale, post, translation } = Astro.props
+const strings = t(locale)
+const { slug } = parseId(post.id)
+
+// Only advertise hreflang for languages this post actually exists in.
+const alternates: Partial<Record<Locale, string>> = {}
+alternates[locale] = postUrl(locale, slug)
+
+let translationHref: string | undefined
+let translationLocale: Locale | undefined
+if (translation) {
+  const other = parseId(translation.id)
+  translationLocale = other.locale
+  translationHref = postUrl(other.locale, other.slug)
+  alternates[other.locale] = translationHref
+}
+---
+
+<BaseLayout
+  locale={locale}
+  title={post.data.title}
+  description={post.data.description}
+  alternates={alternates}
+  ogType="article"
+>
+  <article class="shell">
+    <header class="head reveal">
+      <p class="label meta">
+        <time datetime={post.data.pubDate.toISOString()}>
+          {formatDate(post.data.pubDate, locale)}
+        </time>
+        <span class="dot">·</span>
+        <span>{strings['post.readingTime'](readingTime(post.body))}</span>
+      </p>
+
+      <h1 class="title">{post.data.title}</h1>
+      <p class="lede">{post.data.description}</p>
+
+      {
+        post.data.tags.length > 0 && (
+          <ul class="tags">
+            {post.data.tags.map((tag) => (
+              <li class="tag label">{tag}</li>
+            ))}
+          </ul>
+        )
+      }
+    </header>
+
+    <hr class="rule reveal" style="--i: 1" />
+
+    <div class="prose reveal" style="--i: 2">
+      <slot />
+    </div>
+
+    <p class="end"><SealMark size={20} /></p>
+
+    <footer class="foot">
+      {
+        post.data.updatedDate && (
+          <p class="label updated">
+            {strings['post.updated']}{' '}
+            <time datetime={post.data.updatedDate.toISOString()}>
+              {formatDate(post.data.updatedDate, locale)}
+            </time>
+          </p>
+        )
+      }
+      <nav class="post-nav">
+        <a href={localeUrl(locale, 'blog')}>← {strings['post.back']}</a>
+        {
+          translationHref && translationLocale && (
+            <a
+              href={translationHref}
+              lang={HTML_LANG[translationLocale]}
+              hreflang={HTML_LANG[translationLocale]}
+            >
+              {strings['post.translation']} →
+            </a>
+          )
+        }
+      </nav>
+    </footer>
+  </article>
+</BaseLayout>
+
+<style>
+  .head {
+    --i: 0;
+  }
+
+  .meta {
+    display: flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    margin: 0 0 1.1rem;
+  }
+
+  .dot {
+    color: var(--rule-strong);
+  }
+
+  .title {
+    font-size: clamp(1.9rem, 5.2vw, 2.85rem);
+    font-weight: 400;
+    letter-spacing: -0.022em;
+  }
+
+  :lang(zh) .title {
+    letter-spacing: 0.005em;
+  }
+
+  .lede {
+    margin: 0.85rem 0 0;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    list-style: none;
+    margin: 1.2rem 0 0;
+    padding: 0;
+  }
+
+  .tag {
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 0.15rem 0.45rem;
+  }
+
+  .rule {
+    margin-block: 2rem;
+  }
+
+  /* End-of-article seal, centred like a printer's mark. */
+  .end {
+    display: flex;
+    justify-content: center;
+    margin-block: 3.5rem 0;
+  }
+
+  .foot {
+    margin-block-start: 2.5rem;
+    padding-block-start: 1.4rem;
+    border-block-start: 1px solid var(--rule);
+  }
+
+  .updated {
+    margin: 0 0 0.9rem;
+  }
+
+  .post-nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.6rem 1.5rem;
+    font-size: 0.9375rem;
+  }
+
+  .post-nav a {
+    color: var(--ink-soft);
+    text-decoration: none;
+  }
+
+  .post-nav a:hover {
+    color: var(--seal);
+  }
+</style>
