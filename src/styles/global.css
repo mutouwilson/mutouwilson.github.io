@@ -70,14 +70,17 @@
   --grain: 0.035;
   --shadow: 0 1px 2px rgb(27 25 22 / 4%), 0 8px 28px -12px rgb(27 25 22 / 12%);
 
-  /* Prose measure. 40rem at the 19px body size lands on ~34 CJK characters and
-     ~67 Latin characters per line — inside the comfortable range for both, which
-     is what a bilingual site has to satisfy. */
-  --measure: 40rem;
-  /* Tables and diagrams carry more than prose does, so they get a wider band on
-     large screens. Kept below `.shell--wide` so the hierarchy reads
-     prose < figures < page chrome. */
-  --measure-figure: 50rem;
+  /* One column for everything — prose, tables, figures, header, footer, index.
+     48rem at the 19px body size is ~40 CJK characters and ~81 Latin characters
+     per line. CJK stays inside its comfortable 30–45 band; Latin runs past the
+     classic 66 but holds up at this size with a 1.72 line height. Going wider
+     pushes CJK to the top of its band too, so this is about as far as one shared
+     measure reaches. (A per-locale measure would let the English side sit
+     narrower, at the cost of the two versions no longer matching.)
+
+     Letting figures reach past the prose was tried and reverted: a table wider
+     than the list beneath it reads as a layout bug, not as emphasis. */
+  --measure: 48rem;
   --gutter: clamp(1.25rem, 5vw, 3rem);
 
   color-scheme: light;
@@ -214,13 +217,6 @@ a:hover {
   max-width: calc(var(--measure) + var(--gutter) * 2);
   margin-inline: auto;
   padding-inline: var(--gutter);
-}
-
-/* The wide rail: page chrome, the post index, and the figure band all share it,
-   so a figure's edges line up with the header above it. Prose sits on the
-   narrower rail, centred inside this one. */
-.shell--wide {
-  max-width: calc(var(--measure-figure) + var(--gutter) * 2);
 }
 
 main {
@@ -673,30 +669,31 @@ h4 {
   }
 }
 
-/* Depth tiers (RSI). Indentation carries the "deeper" axis. */
+/* Depth tiers (RSI). Staggered indentation with a rule per tier was tried first
+   and read as clutter: three disconnected verticals and a ragged left edge
+   fighting the prose. Order carries the depth instead, on the same hairline rows
+   as `.stack`, so the two figures in this post look like one system. */
 .prose .tiers {
   margin-block: 2.2em;
   list-style: none;
   padding: 0;
+  border-block-start: 1px solid var(--rule);
 }
 
-/* Indent grows with `--depth`, set per item. Sibling margins do not accumulate,
-   so the depth has to be stated rather than derived from position. */
 .prose .tiers > li {
-  position: relative;
-  margin: 0 0 0 calc(var(--depth, 0) * 1.5rem);
-  padding: 0.75rem 0 0.75rem 1.1rem;
-  border-inline-start: 2px solid var(--rule);
-}
-
-/* Deepest tier is the one that touches the weights — mark it. */
-.prose .tiers > li:last-child {
-  border-inline-start-color: var(--seal);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 11rem);
+  gap: 0.15rem 0.9rem;
+  align-items: baseline;
+  margin: 0;
+  padding-block: 0.7rem;
+  border-block-end: 1px solid var(--rule);
 }
 
 .prose .tier-name {
+  margin: 0;
   font-size: 0.9375em;
-  font-weight: 500;
+  line-height: 1.45;
 }
 
 .prose .tier-name span {
@@ -708,25 +705,26 @@ h4 {
   margin-inline-end: 0.6em;
 }
 
-.prose .tier-note {
-  margin-block-start: 0.15rem;
-  color: var(--ink-soft);
-  font-size: 0.875em;
-  line-height: 1.55;
+.prose .tier-fact {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  line-height: 1.5;
+  color: var(--ink-faint);
 }
 
+/* The tier that touches the weights is the only irreversible one. */
+.prose .tiers > li:last-child .tier-fact {
+  color: var(--seal);
+}
 
-/* Let tables and diagrams reach past the prose measure once there is room for
-   it. Negative margins rather than a wider container, so the prose keeps its own
-   width. Gated on viewport width because the extra inline size has to come from
-   somewhere — below this, the margins are not deep enough to give it back. */
-@media (min-width: 64rem) {
-  .prose > figure,
-  .prose > .table-scroll {
-    inline-size: var(--measure-figure);
-    margin-inline: calc((var(--measure) - var(--measure-figure)) / 2);
+@media (max-width: 30rem) {
+  .prose .tiers > li {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
+
 
 /* ============================================================================
    Entrance — one orchestrated reveal on load, staggered by --i

@@ -165,14 +165,14 @@ harness 到底由哪几部分组成，各家厂商的框架细节不一，但是
 
 | 时间    | 功能                                            | 内化了什么                                                                  |
 | ------- | ----------------------------------------------- | --------------------------------------------------------------------------- |
-| 2025-02 | research preview 发布                           | 终端里的 agent loop 首次产品化                                              |
-| 2025-05 | GA + SDK                                        | harness 本身成为可复用组件                                                  |
-| 2025-07 | Hooks                                           | 验证外化成确定性脚本，Stop hook 可以拦住"想收工的循环"                      |
-| 2025-07 | Subagents                                       | 委派与上下文隔离成为原语（fork 子进程）                                     |
-| 2025-09 | Checkpoints / rewind；SDK 更名 Claude Agent SDK | 状态快照与可逆执行；harness 从编码泛化到通用 agent                          |
-| 2025-10 | Agent Skills                                    | 能力按需渐进加载，扩展动作空间不撑爆上下文                                  |
-| 2025-11 | Code execution with MCP                         | 动作从 N 次离散工具调用变成模型自写代码（示例任务 token 从 15 万降到 2 千） |
-| 2026-05 | /goal                                           | 持久完成条件：每轮结束由独立评估器判定"真的可以停了吗"                      |
+| 2025‑02 | research preview 发布                           | 终端里的 agent loop 首次产品化                                              |
+| 2025‑05 | GA + SDK                                        | harness 本身成为可复用组件                                                  |
+| 2025‑07 | Hooks                                           | 验证外化成确定性脚本，Stop hook 可以拦住"想收工的循环"                      |
+| 2025‑07 | Subagents                                       | 委派与上下文隔离成为原语（fork 子进程）                                     |
+| 2025‑09 | Checkpoints / rewind；SDK 更名 Claude Agent SDK | 状态快照与可逆执行；harness 从编码泛化到通用 agent                          |
+| 2025‑10 | Agent Skills                                    | 能力按需渐进加载，扩展动作空间不撑爆上下文                                  |
+| 2025‑11 | Code execution with MCP                         | 动作从 N 次离散工具调用变成模型自写代码（示例任务 token 从 15 万降到 2 千） |
+| 2026‑05 | /goal                                           | 持久完成条件：每轮结束由独立评估器判定"真的可以停了吗"                      |
 
 Ralph 沉淀出几条后来通用的配方：
 
@@ -193,23 +193,14 @@ Ralph 沉淀出几条后来通用的配方：
 
 <figure>
 <ol class="tiers">
-<li style="--depth: 0">
-<p class="tier-name"><span>工件级别</span>改记忆、技能库、prompt</p>
-<p class="tier-note">执行任务的模型没变，坏了能回滚。验证器最硬：跑一遍就知道有没有变好。</p>
-</li>
-<li style="--depth: 1">
-<p class="tier-name"><span>系统级别</span>改调用自己的那套脚手架</p>
-<p class="tier-note">用跑分替代 Gödel Machine 要求的“证明有益”。DGM 走到了改自己代码、维护进化档案。</p>
-</li>
-<li style="--depth: 2">
-<p class="tier-name"><span>权重级别</span>改模型自己的权重</p>
-<p class="tier-note">最深的一层，也是唯一不可回滚的一层。SEAL 在这里最早撞上灾难性遗忘。</p>
-</li>
+<li><p class="tier-name"><span>工件级别</span>改记忆、技能库、prompt</p><p class="tier-fact">可回滚 · 验证器最硬</p></li>
+<li><p class="tier-name"><span>系统级别</span>改调用自己的那套脚手架</p><p class="tier-fact">可回滚 · 跑分替代证明</p></li>
+<li><p class="tier-name"><span>权重级别</span>改模型自己的权重</p><p class="tier-fact">不可回滚 · 验证器最软</p></li>
 </ol>
 <figcaption>越往深走，改动越不可逆，而能用来判断“改好了没有”的验证器越软。</figcaption>
 </figure>
 
-**工件级别**：工件在改进，但执行任务的模型没变，坏了能回滚。
+**工件级别**：工件在改进，执行任务的模型没变。
 
 - 记忆：比如 Letta 让后台 agent 趁空闲整理记忆，像夜间碎片整理
 - 技能库：比如 Voyager 攒可执行的代码技能，SkillOS 用 RL 做技能策展
