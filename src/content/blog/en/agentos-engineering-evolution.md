@@ -50,7 +50,7 @@ This post is about how the engineering around that idea actually developed. In t
 </li>
 <li>
 <p class="timeline-era"><span class="timeline-span">2026–</span> Loop engineering</p>
-<p class="timeline-note">The scheduler finally stands up. The hard part was never making it spin — it is defining when it stops.</p>
+<p class="timeline-note">The scheduler finally stands up, with an entire harness era underneath it.</p>
 <ul class="timeline-marks">
 <li><time datetime="2025">2025</time><span>Ralph, a loop in one line of bash</span></li>
 <li><time datetime="2026-03">2026-03</time><span>Claude Code /loop</span></li>
@@ -142,7 +142,7 @@ Exactly which parts make up a harness differs by vendor, but line up the compone
 </ol>
 <div class="stack-cross">Observability · dmesg / strace</div>
 </div>
-<figcaption>Six parts, five with a prototype in an OS. The one without is exactly what a probabilistic CPU forces into existence.</figcaption>
+<figcaption>Six parts, five with a prototype in an OS.</figcaption>
 </figure>
 
 - **Tools and action interface (ACI) = instruction set and calling convention**. The term comes from SWE-agent: which tools an agent can reach, how an action is expressed, how the environment answers back — that decides whether it can work at all.
@@ -253,7 +253,7 @@ Two lines run through all five eras.
 <text x="586" y="240" class="dgm-soft" text-anchor="middle">end-to-end RL</text>
 </svg>
 </div>
-<figcaption>Every generation of scaffolding sinks. Whatever reaches the weights stops being anyone's advantage.</figcaption>
+<figcaption>Every generation of scaffolding sinks.</figcaption>
 </figure>
 
 That raises the question: what does not get absorbed? Look at conventional computers again. CPUs got a million times faster over fifty years and operating systems kept getting thinner, but they never disappeared. Three things never belonged to the CPU in the first place: private data (memory and context as an asset), business criteria (what counts as having done the task right, which comes from the business), and verifiers (ground truth independent of the compute unit). Every generation the model gets stronger, AgentOS gets one layer thinner. The layer that is left is the one worth investing in.

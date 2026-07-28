@@ -49,7 +49,7 @@ tags: ['AgentOS', 'Agent 工程']
 </li>
 <li>
 <p class="timeline-era"><span class="timeline-span">2026–</span> Loop 工程</p>
-<p class="timeline-note">调度器真正立起来。核心不是让它转，而是定义它什么时候该停。</p>
+<p class="timeline-note">调度器真正立起来。底下垫着整个 harness 时代的成果。</p>
 <ul class="timeline-marks">
 <li><time datetime="2025">2025</time><span>Ralph，一行 bash 的循环</span></li>
 <li><time datetime="2026-03">2026-03</time><span>Claude Code /loop</span></li>
@@ -141,7 +141,7 @@ harness 到底由哪几部分组成，各家厂商的框架细节不一，但是
 </ol>
 <div class="stack-cross">可观测性 · dmesg / strace</div>
 </div>
-<figcaption>六个部件，五个能在 OS 里找到原型。唯一找不到的那个，正是概率 CPU 逼出来的。</figcaption>
+<figcaption>六个部件，五个能在 OS 里找到原型。</figcaption>
 </figure>
 
 - **工具与动作接口（ACI）= 指令集与系统调用约定**。ACI 这个概念出自 SWE-agent：agent 能调哪些工具、动作怎么表达、环境怎么回话，直接决定它能不能干活。
@@ -252,7 +252,7 @@ Ralph 沉淀出几条后来通用的配方：
 <text x="512" y="240" class="dgm-soft" text-anchor="middle">端到端 RL</text>
 </svg>
 </div>
-<figcaption>每一代脚手架都在往下沉。沉到权重里的那部分，就不再是任何人的竞争力。</figcaption>
+<figcaption>每一代脚手架都在往下沉。</figcaption>
 </figure>
 
 由此我们需要思考一个问题，那到底什么不会被吸收？还是看下传统的计算机：CPU 五十年快了百万倍，OS 也在变薄，但从来没有消失，有三样东西天生不属于 CPU：私有数据（记忆与上下文资产）、业务判据（什么算把任务做对，这来自业务）、验证器（独立于计算单元的 ground truth）。模型每变强一代，AgentOS 就薄一层；剩下的那一层，才是真正值得投入的地方。
