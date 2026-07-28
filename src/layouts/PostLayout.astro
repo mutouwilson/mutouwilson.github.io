@@ -179,3 +179,18 @@ if (translation) {
     color: var(--seal);
   }
 </style>
+
+<script>
+  // Give each table its own horizontal scroll box, so a wide one keeps readable
+  // column widths instead of collapsing. See the `.table-scroll` note in
+  // global.css for why this is done here and not in CSS or at build time.
+  for (const table of document.querySelectorAll('.prose table')) {
+    const scroller = document.createElement('div')
+    scroller.className = 'table-scroll'
+    // Keyboard users need to be able to reach and scroll the box.
+    scroller.tabIndex = 0
+    scroller.setAttribute('role', 'region')
+    table.replaceWith(scroller)
+    scroller.append(table)
+  }
+</script>

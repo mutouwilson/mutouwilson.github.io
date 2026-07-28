@@ -161,9 +161,12 @@ video {
   font-variant-numeric: normal;
 }
 
-:lang(zh) em {
+/* Chinese convention: emphasis dots, not italics — synthesised oblique CJK looks
+   wrong. Matched on the `em` itself rather than as `:lang(zh) em`, so an English
+   run inside a Chinese page can opt out with `<em lang="en">` and get real
+   italics (paper titles, for instance). */
+em:lang(zh) {
   font-style: normal;
-  /* Chinese convention: emphasis dots, not italics. */
   text-emphasis: dot;
   text-emphasis-position: under right;
   -webkit-text-emphasis: dot;
@@ -355,6 +358,12 @@ h4 {
   border: 1px solid var(--rule);
 }
 
+/* The UA default is `margin: 1em 40px`, which insets figures 80px inside the
+   measure — they must line up with the text column instead. */
+.prose figure {
+  margin-inline: 0;
+}
+
 .prose figcaption,
 .prose img + em {
   display: block;
@@ -369,17 +378,34 @@ h4 {
   font-size: 0.94em;
 }
 
-/* A table box can exceed its container and make the whole page scroll sideways.
-   Keeping cell content breakable is what prevents that in practice — long inline
-   code and URLs are the usual culprits. The tidier fix (wrapping each table in an
-   overflow container) needs a rehype plugin, which would mean switching Markdown
-   processors; see the note in astro.config.mjs. A table with enough columns to
-   exceed the measure on its own can still overflow. */
+/* Baseline: keep cell content breakable so a table can never push the page
+   sideways on its own. This alone leaves a wide table readable but cramped. */
 .prose :is(th, td) {
   text-align: start;
   padding: 0.5em 0.7em;
   border-bottom: 1px solid var(--rule);
   overflow-wrap: break-word;
+}
+
+/* Progressive enhancement: PostLayout wraps each table in `.table-scroll` on
+   load, which lets a wide table keep its natural column widths and scroll inside
+   its own box instead of collapsing to 100px columns. A scroll container cannot
+   be created in CSS alone, and doing it at build time would mean swapping the
+   Markdown processor (see the note in astro.config.mjs). Without JavaScript the
+   wrapper never appears, `min-width` never applies, and the baseline above
+   stands. */
+.table-scroll {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+.table-scroll table {
+  min-width: 30rem;
+}
+
+.table-scroll:focus-visible {
+  outline: 2px solid var(--seal);
+  outline-offset: 4px;
 }
 
 .prose :is(th, td) code {
@@ -395,6 +421,288 @@ h4 {
   border: 0;
   border-top: 1px solid var(--rule);
   margin-block: 2.6em;
+}
+
+/* ============================================================================
+   Era timeline — a figure made of text rather than an image, so it inherits the
+   type scale and both themes, stays legible at any width, and is readable by a
+   screen reader. Selectors are scoped under `.prose` to outrank the prose list
+   rules above, which are equally specific.
+   ========================================================================== */
+.prose .timeline {
+  margin-block: 2em;
+}
+
+.prose .timeline > ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-inline-start: 1px solid var(--rule);
+}
+
+.prose .timeline > ol > li {
+  position: relative;
+  margin: 0;
+  padding: 0 0 1.7rem 1.5rem;
+}
+
+.prose .timeline > ol > li:last-child {
+  padding-block-end: 0;
+}
+
+/* Cinnabar tick sitting on the rule, aligned to the era's first line. */
+.prose .timeline > ol > li::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: -3.5px;
+  inset-block-start: 0.6em;
+  inline-size: 6px;
+  block-size: 6px;
+  border-radius: 50%;
+  background: var(--seal);
+}
+
+.prose .timeline-era {
+  margin: 0;
+  font-size: 1.0625em;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.prose .timeline-span {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-faint);
+  margin-inline-end: 0.65em;
+}
+
+.prose .timeline-note {
+  margin: 0.3em 0 0;
+  color: var(--ink-soft);
+  font-size: 0.9375em;
+  line-height: 1.6;
+}
+
+.prose .timeline-marks {
+  list-style: none;
+  margin: 0.7em 0 0;
+  padding: 0;
+}
+
+.prose .timeline-marks li {
+  display: grid;
+  grid-template-columns: 4.75rem minmax(0, 1fr);
+  gap: 0 0.6rem;
+  margin: 0;
+  font-size: 0.9375em;
+  line-height: 1.6;
+}
+
+.prose .timeline-marks li + li {
+  margin-block-start: 0.25em;
+}
+
+.prose .timeline-marks time {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-faint);
+  padding-block-start: 0.42em;
+}
+
+/* Narrow screens: stack the date above its milestone instead of squeezing both. */
+@media (max-width: 26rem) {
+  .prose .timeline-marks li {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .prose .timeline-marks time {
+    padding-block-start: 0.3em;
+  }
+}
+
+/* ============================================================================
+   Diagrams. Every colour comes from a theme token, so one drawing serves both
+   themes — the reason these are markup rather than images.
+   ========================================================================== */
+
+/* SVG figure. Scrolls itself on narrow screens: scaling a fixed viewBox down to
+   phone width would shrink the labels past legibility, so it keeps a floor
+   width instead. */
+.prose .dgm {
+  margin-block: 2.2em;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+.prose .dgm svg {
+  display: block;
+  inline-size: 100%;
+  min-inline-size: 30rem;
+  block-size: auto;
+}
+
+.dgm-rule {
+  stroke: var(--rule);
+  stroke-width: 1;
+}
+
+.dgm-arrow {
+  stroke: var(--seal);
+  stroke-width: 1;
+  fill: none;
+}
+
+.dgm-head {
+  fill: var(--seal);
+}
+
+.dgm-text {
+  fill: var(--ink);
+  font-family: var(--font-serif);
+  font-size: 13px;
+}
+
+.dgm-soft {
+  fill: var(--ink-soft);
+  font-family: var(--font-serif);
+  font-size: 12px;
+}
+
+.dgm-label {
+  fill: var(--ink-faint);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.prose figcaption {
+  margin-block-start: 0.7em;
+}
+
+/* Two-column stack with a cross-cutting band down one side (harness anatomy). */
+.prose .stack {
+  margin-block: 2.2em;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0 1rem;
+}
+
+.prose .stack ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-block-start: 1px solid var(--rule);
+}
+
+.prose .stack li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 9.5rem);
+  gap: 0.15rem 0.9rem;
+  align-items: baseline;
+  margin: 0;
+  padding-block: 0.7rem;
+  border-block-end: 1px solid var(--rule);
+}
+
+.prose .stack-part {
+  font-size: 0.9375em;
+  line-height: 1.45;
+}
+
+.prose .stack-os {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+  line-height: 1.5;
+}
+
+/* The one harness component with no OS counterpart — the asymmetry is the point. */
+.prose .stack-none {
+  color: var(--seal);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* Vertical band naming the cross-cutting concern. */
+.prose .stack-cross {
+  display: grid;
+  place-items: center;
+  padding-inline: 0.55rem;
+  border-inline-start: 1px solid var(--rule);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  writing-mode: vertical-rl;
+  text-align: center;
+}
+
+@media (max-width: 30rem) {
+  .prose .stack {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .prose .stack li {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Vertical text has nowhere to go once the grid is one column. */
+  .prose .stack-cross {
+    writing-mode: horizontal-tb;
+    place-items: start;
+    padding: 0.7rem 0 0;
+    border-inline-start: 0;
+  }
+}
+
+/* Depth tiers (RSI). Indentation carries the "deeper" axis. */
+.prose .tiers {
+  margin-block: 2.2em;
+  list-style: none;
+  padding: 0;
+}
+
+/* Indent grows with `--depth`, set per item. Sibling margins do not accumulate,
+   so the depth has to be stated rather than derived from position. */
+.prose .tiers > li {
+  position: relative;
+  margin: 0 0 0 calc(var(--depth, 0) * 1.5rem);
+  padding: 0.75rem 0 0.75rem 1.1rem;
+  border-inline-start: 2px solid var(--rule);
+}
+
+/* Deepest tier is the one that touches the weights — mark it. */
+.prose .tiers > li:last-child {
+  border-inline-start-color: var(--seal);
+}
+
+.prose .tier-name {
+  font-size: 0.9375em;
+  font-weight: 500;
+}
+
+.prose .tier-name span {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  margin-inline-end: 0.6em;
+}
+
+.prose .tier-note {
+  margin-block-start: 0.15rem;
+  color: var(--ink-soft);
+  font-size: 0.875em;
+  line-height: 1.55;
 }
 
 
