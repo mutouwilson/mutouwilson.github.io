@@ -14,13 +14,30 @@ const RECENT = 5
 const posts = (await getPosts(locale)).slice(0, RECENT)
 
 const alternates = { en: localeUrl('en'), zh: localeUrl('zh') }
+
+// The motto is a parallel couplet. Breaking it wherever the measure runs out
+// splits words across lines (奔驰 landed on two); breaking at the semicolon puts
+// one clause per line, which is how a couplet is set anyway.
+const mottoClauses = strings['home.intro']
+  .split(/(?<=[；;])/)
+  .map((clause) => clause.trim())
+  .filter(Boolean)
 ---
 
 <BaseLayout locale={locale} alternates={alternates}>
   <div class="shell">
     <section class="intro">
       <h1 class="display reveal">{strings['site.title']}<span class="mark">.</span></h1>
-      <p class="lede intro-text reveal" style="--i: 1">{strings['home.intro']}</p>
+      <blockquote class="motto reveal" style="--i: 1">
+        <p class="motto-text">
+          {mottoClauses.map((clause) => <span class="motto-clause">{clause}</span>)}
+        </p>
+        {
+          strings['home.introSource'] && (
+            <cite class="motto-source">{strings['home.introSource']}</cite>
+          )
+        }
+      </blockquote>
     </section>
 
     <hr class="rule reveal" style="--i: 2" />
@@ -50,9 +67,64 @@ const alternates = { en: localeUrl('en'), zh: localeUrl('zh') }
     color: var(--seal);
   }
 
-  .intro-text {
-    max-width: 32rem;
-    margin: 1.5rem 0 0;
+  /* The motto is set in a brush Kai face in Chinese; English has no equivalent
+     hand, so it takes the serif's italic — the same shift in register. */
+  .motto {
+    margin: 1.9rem 0 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .motto-text {
+    margin: 0;
+    color: var(--ink);
+  }
+
+  /* One clause per line; each still wraps on its own if the measure demands it. */
+  .motto-clause {
+    display: block;
+    text-wrap: pretty;
+  }
+
+  /* Scaled so the longest clause (15 characters) still fits one line on a phone;
+     wrapping inside a clause puts the break back in the middle of a word. */
+  .motto-text:lang(zh) {
+    font-family: var(--font-kai);
+    font-size: clamp(1.25rem, 5vw, 1.5rem);
+    line-height: 1.95;
+    letter-spacing: 0.05em;
+  }
+
+  .motto-text:lang(en) {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(1.125rem, 4.4vw, 1.3125rem);
+    line-height: 1.7;
+  }
+
+  .motto-source {
+    display: block;
+    margin-block-start: 0.85rem;
+    color: var(--ink-faint);
+    font-style: normal;
+    font-size: 0.8125rem;
+    letter-spacing: 0.04em;
+  }
+
+  .motto-source:lang(zh) {
+    font-family: var(--font-kai);
+  }
+
+  .motto-source:lang(en) {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .motto-source::before {
+    content: '—— ';
+    color: var(--rule-strong);
   }
 
   .rule {

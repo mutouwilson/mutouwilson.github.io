@@ -44,6 +44,24 @@
     U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
+/* LXGW WenKai (霞鹜文楷), SIL OFL 1.1 — see LXGWWenKai-OFL.txt beside the file.
+   Subset to the 31 glyphs of the home page motto: 7KB instead of the 25MB full
+   face. Its licence grants explicit permission to subset and convert to WOFF2
+   for web delivery while keeping the reserved name, provided it is not offered
+   as an installable desktop font.
+
+   Regenerate after editing the motto, or characters will silently fall back:
+     pyftsubset LXGWWenKai-Regular.ttf --text='<the motto>' --flavor=woff2 \
+       --layout-features='' --no-hinting --desubroutinize \
+       --output-file=public/fonts/lxgw-wenkai-motto.woff2 */
+@font-face {
+  font-family: 'LXGW WenKai';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/lxgw-wenkai-motto.woff2') format('woff2');
+}
+
 /* ============================================================================
    Tokens
    ========================================================================== */
@@ -54,6 +72,11 @@
     serif;
   --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, 'JetBrains Mono',
     'IBM Plex Mono', Menlo, Consolas, monospace;
+  /* Brush-written Kai. The fallbacks are the system Kai faces on macOS and
+     Windows, so the webfont swap is barely visible and Linux still gets a
+     recognisably Kai shape where one is installed. */
+  --font-kai: 'LXGW WenKai', 'Kaiti SC', STKaiti, KaiTi, 楷体, 'TW-Kai',
+    'AR PL UKai CN', var(--font-serif);
 
   /* Warm paper & ink. Cinnabar is the only accent — used sparingly. */
   --paper: #f6f2e9;

@@ -53,6 +53,8 @@ type Dict = {
   'site.title': string
   'site.description': string
   'home.intro': string
+  /** Attribution under the motto. Set to '' to hide the line. */
+  'home.introSource': string
   'home.recent': string
   'home.all': string
   'nav.writing': string
@@ -71,14 +73,18 @@ type Dict = {
   '404.home': string
 }
 
-// TODO(you): `site.description` and `home.intro` are placeholders — rewrite them
-// in your own voice. Everything else is chrome you can leave alone.
+// TODO(you): `site.description` is still a placeholder — it is the meta
+// description search engines and link previews use, so it wants a plain sentence
+// about the site rather than the motto.
 export const ui: Record<Locale, Dict> = {
   en: {
     'site.title': 'Wilson Wang',
     'site.description': 'Notes on software, systems, and things I am building.',
+    // Rendered from the Chinese below. Not a quotation from a published
+    // translation — swap in one if you would rather cite a translator.
     'home.intro':
-      'I build software. This is where I write down what I learn along the way — mostly about systems, architecture, and the details that only show up once something is running in production.',
+      'Heaven and earth are utterly still, yet the breath in them never pauses; sun and moon race day and night, yet their steady light is unchanged through ten thousand ages.',
+    'home.introSource': 'Caigentan · Hong Yingming',
     'home.recent': 'Recent',
     'home.all': 'All writing',
     'nav.writing': 'Writing',
@@ -99,8 +105,10 @@ export const ui: Record<Locale, Dict> = {
   zh: {
     'site.title': 'Wilson Wang',
     'site.description': '关于软件、系统，以及我正在做的东西的一些记录。',
-    'home.intro':
-      '我写软件。这里记录我在过程中学到的东西 —— 大多和系统、架构有关，以及那些只有真正跑起来之后才会浮现的细节。',
+    // Any edit here needs the font subset regenerated — see the @font-face note
+    // in global.css.
+    'home.intro': '天地寂然不动，而气机无息稍停；日月昼夜奔驰，而贞明万古不易',
+    'home.introSource': '《菜根谭》',
     'home.recent': '最近',
     'home.all': '全部文章',
     'nav.writing': '文章',
