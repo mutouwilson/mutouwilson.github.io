@@ -98,14 +98,14 @@ export const ui: Record<Locale, Dict> = {
   },
   zh: {
     'site.title': 'Wilson Wang',
-    'site.description': '关于软件、系统,以及我正在做的东西的一些记录。',
+    'site.description': '关于软件、系统，以及我正在做的东西的一些记录。',
     'home.intro':
-      '我写软件。这里记录我在过程中学到的东西 —— 大多和系统、架构有关,以及那些只有真正跑起来之后才会浮现的细节。',
+      '我写软件。这里记录我在过程中学到的东西 —— 大多和系统、架构有关，以及那些只有真正跑起来之后才会浮现的细节。',
     'home.recent': '最近',
     'home.all': '全部文章',
     'nav.writing': '文章',
     'blog.title': '文章',
-    'blog.description': '这里发布过的全部内容,由新到旧。',
+    'blog.description': '这里发布过的全部内容，由新到旧。',
     'blog.empty': '还没有发布任何文章。',
     'post.updated': '更新于',
     'post.back': '全部文章',
@@ -115,7 +115,7 @@ export const ui: Record<Locale, Dict> = {
     'theme.switch': '切换浅色/深色主题',
     'footer.builtWith': '由 Astro 构建',
     '404.title': '这里什么也没有',
-    '404.body': '这个页面不存在,或者已经搬到别处去了。',
+    '404.body': '这个页面不存在，或者已经搬到别处去了。',
     '404.home': '回到首页',
   },
 }
