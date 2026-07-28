@@ -13,7 +13,7 @@ tags: ['AgentOS', 'Agent 工程']
 
 "LLM 是新计算机的 CPU"这个视角，从这条推开始出圈。
 
-比他晚一个月，Rutgers 发了《LLM as OS， Agents as Apps》把完整映射画了出来；再过一个季度，同一个实验室把图纸变成了真系统：AIOS，一个带 scheduler、memory manager、access manager 的 agent 内核。
+比他晚一个月，Rutgers 发了《LLM as OS, Agents as Apps》把完整映射画了出来；再过一个季度，同一个实验室把图纸变成了真系统：AIOS，一个带 scheduler、memory manager、access manager 的 agent 内核。
 
 本文要讲的重点是 AgentOS 工程技术体系的演化过程。从 GPT-3 至今的六年里，它经历过四次大的变化：prompt 工程、上下文工程、harness 工程、loop 工程；再加上现在大家还在探索的第五个阶段，自进化的 AgentOS。
 
@@ -271,23 +271,23 @@ Ralph 沉淀出几条后来通用的配方：
 
 ## 参考文献
 
-- Brown et al.， 《Language Models are Few-Shot Learners》（GPT-3），2020-05 — [arXiv：2005.14165](https://arxiv.org/abs/2005.14165)
-- Lewis et al.， 《Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks》，2020-05 — [arXiv：2005.11401](https://arxiv.org/abs/2005.11401)
-- Wei et al.， 《Chain-of-Thought Prompting Elicits Reasoning in Large Language Models》，2022-01 — [arXiv：2201.11903](https://arxiv.org/abs/2201.11903)
-- Yao et al.， 《ReAct： Synergizing Reasoning and Acting in Language Models》，2022-10 — [arXiv：2210.03629](https://arxiv.org/abs/2210.03629)
-- Schick et al.， 《Toolformer： Language Models Can Teach Themselves to Use Tools》，2023-02 — [arXiv：2302.04761](https://arxiv.org/abs/2302.04761)
-- Yao et al.， 《Tree of Thoughts： Deliberate Problem Solving with Large Language Models》，2023-05 — [arXiv：2305.10601](https://arxiv.org/abs/2305.10601)
-- Liu et al.， 《Lost in the Middle： How Language Models Use Long Contexts》，2023-07 — [arXiv：2307.03172](https://arxiv.org/abs/2307.03172)
-- Packer et al.， 《MemGPT： Towards LLMs as Operating Systems》，UC Berkeley，2023-10 — [arXiv：2310.08560](https://arxiv.org/abs/2310.08560)。虚拟上下文管理：RAM/磁盘分层、换页、中断。后演化为 Letta（2024-09 出 stealth）。
+- Brown et al., 《Language Models are Few-Shot Learners》（GPT-3），2020-05 — [arXiv:2005.14165](https://arxiv.org/abs/2005.14165)
+- Lewis et al., 《Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks》，2020-05 — [arXiv:2005.11401](https://arxiv.org/abs/2005.11401)
+- Wei et al., 《Chain-of-Thought Prompting Elicits Reasoning in Large Language Models》，2022-01 — [arXiv:2201.11903](https://arxiv.org/abs/2201.11903)
+- Yao et al., 《ReAct: Synergizing Reasoning and Acting in Language Models》，2022-10 — [arXiv:2210.03629](https://arxiv.org/abs/2210.03629)
+- Schick et al., 《Toolformer: Language Models Can Teach Themselves to Use Tools》，2023-02 — [arXiv:2302.04761](https://arxiv.org/abs/2302.04761)
+- Yao et al., 《Tree of Thoughts: Deliberate Problem Solving with Large Language Models》，2023-05 — [arXiv:2305.10601](https://arxiv.org/abs/2305.10601)
+- Liu et al., 《Lost in the Middle: How Language Models Use Long Contexts》，2023-07 — [arXiv:2307.03172](https://arxiv.org/abs/2307.03172)
+- Packer et al., 《MemGPT: Towards LLMs as Operating Systems》，UC Berkeley，2023-10 — [arXiv:2310.08560](https://arxiv.org/abs/2310.08560)。虚拟上下文管理：RAM/磁盘分层、换页、中断。后演化为 Letta（2024-09 出 stealth）。
 - Karpathy，"LLM OS" 推文（2023-11-11）与 《Intro to Large Language Models》 演讲（2023-11）
-- Zhang et al.（Rutgers），《LLM as OS， Agents as Apps》，2023-12 — [arXiv：2312.03815](https://arxiv.org/abs/2312.03815)；同实验室 《AIOS： LLM Agent Operating System》，2024-03 — [arXiv：2403.16971](https://arxiv.org/abs/2403.16971)
+- Zhang et al.（Rutgers），《LLM as OS, Agents as Apps》，2023-12 — [arXiv:2312.03815](https://arxiv.org/abs/2312.03815)；同实验室 《AIOS: LLM Agent Operating System》，2024-03 — [arXiv:2403.16971](https://arxiv.org/abs/2403.16971)
 - Cognition，《Introducing Devin》，2024-03-12 — [cognition.com](https://cognition.com/blog/introducing-devin)
-- Yang， Jimenez et al.， 《SWE-agent： Agent-Computer Interfaces Enable Automated Software Engineering》，NeurIPS 2024 — [arXiv：2405.15793](https://arxiv.org/abs/2405.15793)
-- Shumailov et al.， 《AI models collapse when trained on recursively generated data》，Nature，2024-07
+- Yang, Jimenez et al., 《SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering》，NeurIPS 2024 — [arXiv:2405.15793](https://arxiv.org/abs/2405.15793)
+- Shumailov et al., 《AI models collapse when trained on recursively generated data》，Nature，2024-07
 - Cognition，《Don't Build Multi-Agents》，2025-06-12 — [cognition.com](https://cognition.com/blog/dont-build-multi-agents)
 - Anthropic，《How we built our multi-agent research system》，2025-06
-- 季逸超（Peak Ji），《Context Engineering for AI Agents： Lessons from Building Manus》，2025-07
-- I.J. Good， 《Speculations Concerning the First Ultraintelligent Machine》，Advances in Computers vol.6，1965
-- Schmidhuber， 《Gödel Machines： Self-Referential Universal Problem Solvers》，2003
+- 季逸超（Peak Ji），《Context Engineering for AI Agents: Lessons from Building Manus》，2025-07
+- I.J. Good, 《Speculations Concerning the First Ultraintelligent Machine》，Advances in Computers vol.6，1965
+- Schmidhuber, 《Gödel Machines: Self-Referential Universal Problem Solvers》，2003
 - Gergely Orosz / Addy Osmani，《What is Loop Engineering?》，The Pragmatic Engineer
 - OpenAI，《Introducing deep research》
