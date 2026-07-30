@@ -393,8 +393,20 @@ h4 {
   margin-inline: 0;
 }
 
+/* A paragraph that is entirely italic is a caption or an aside, not emphasis —
+   so it must not pick up the Chinese emphasis dots that `em:lang(zh)` applies.
+   Markdown cannot put a class on a paragraph, and a table cannot sit inside a
+   raw `<figure>` without losing its Markdown parsing, so table captions arrive
+   this way. */
+.prose p > em:only-child {
+  font-style: normal;
+  text-emphasis: none;
+  -webkit-text-emphasis: none;
+}
+
 .prose figcaption,
-.prose img + em {
+.prose img + em,
+.prose p > em:only-child {
   display: block;
   font-size: 0.875rem;
   color: var(--ink-faint);
@@ -567,6 +579,26 @@ h4 {
   margin-block: 2.2em;
   overflow-x: auto;
   overscroll-behavior-x: contain;
+
+  /* Diagrams authored against their own `--d-*` palette are dropped in
+     unmodified; these aliases point that palette at the site's tokens, so the
+     drawings follow the light/dark theme without touching their markup. */
+  --d-ink: var(--ink-soft);
+  --d-faint: var(--rule);
+  --d-accent: var(--seal);
+  --d-old: var(--ink-faint);
+  --d-fill: var(--paper);
+  --d-fill-2: var(--paper-sunk);
+  /* Highlighter swatch — no site token for it, and it has to stay legible as a
+     wash over both papers. */
+  --d-mark: #efdca0;
+  /* The site sets only serif and mono; diagram labels join the serif. */
+  --sans: var(--font-serif);
+  --serif: var(--font-serif);
+}
+
+:root[data-theme='dark'] .prose .dgm {
+  --d-mark: rgb(228 198 126 / 40%);
 }
 
 .prose .dgm svg {
