@@ -1,6 +1,6 @@
 ---
 title: 'Agent quality is a five-layer chain'
-description: 'Finishing the task is not the same as handing over a good result. It has to be adopted by the user and produce an effect in real work. Split agent quality into five layers, from running reliably to producing a business outcome, and measure all of them end to end against one denominator.'
+description: 'Finishing a task is not the same as handing over a “good” result. It has to be adopted by the user, and produce an effect in a real business workflow.'
 pubDate: 2026-08-12
 tags: ['Agent engineering', 'quality metrics']
 ---
